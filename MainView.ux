@@ -1,0 +1,7 @@
+<App>
+	<Panel Color="#9ED5E0">
+		<Panel>
+			<BrightCoveVideo Dock="Fill" adPlay="0" accountID="Your Brightcove Account ID" videoID="A Brightcove Video ID" Alignment="Default" />
+		</Panel>
+	</Panel>
+</App>

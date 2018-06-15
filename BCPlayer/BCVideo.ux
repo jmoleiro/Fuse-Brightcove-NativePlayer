@@ -1,0 +1,95 @@
+<Panel Background="#000000" adPlay="0" playState="1" ux:Class="BrightCoveVideo">
+    <string ux:Property="videoID" />   
+    <string ux:Property="accountID" />        
+    <int ux:Property="adPlay" />
+    <int ux:Property="playState" />
+	<JavaScript File="scripts/bcvideo.js" />
+    <Timeline ux:Name="showControls">
+        <Change Duration="0.5" Target="controlPanel.Opacity">
+            <Keyframe Time="0" Value="0" />
+            <Keyframe Time="1" Value="1" />
+        </Change>
+    </Timeline>    
+    <Panel Dock="Fill" Alignment="Center" Height="100%" Width="100%" MinWidth="100%" MinHeight="100%">     
+        <WhileTrue Value="{has_video}"> 
+            <Panel ux:Name="video" Dock="Fill" Background="#000000" Alignment="Default" MinHeight="40%" Width="100%">   
+                <Panel Alignment="Top" Dock="Top">
+                </Panel>
+                <Panel Visibility="Hidden" ux:Name="RestartVideo">
+                    <Image  File="assets/white-repeat-64.png" MaxHeight="15%">
+                        <Clicked>
+                            <Play Target="VideoPlayer" />
+                            <Hide TargetNode="RestartVideo" />
+                            <Show TargetNode="Status" />
+                            <Show TargetNode="PauseVideo" />
+                        </Clicked>
+                    </Image>
+                    <SolidColor Color="#000" Opacity="0.5" />
+                </Panel>
+                <Panel Alignment="Top">
+                </Panel>
+                <Panel ux:Name="controlPanel" Visibility="Hidden" Dock="Bottom" Height="15%" Background="#FE000000" Alignment="Bottom">
+                    <Panel ux:Name="Status" Margin="0, 0, 0, 65">
+                        <Rectangle ux:Name="progressBar" HitTestMode="None" Fill="#ffc215" Width="0%" Height="4" Alignment="Left" Margin="0,5,0,0" />
+                        <Slider ux:Name="_progressSlider" Height="10" Minimum="0" Maximum="1" Alignment="Top" />
+                    </Panel>
+                    <Panel Margin="0, 10, 0, 0">
+                        <Image ux:Name="PauseVideo" File="assets/white-pause-64.png">
+                            <Clicked>
+                                <Pause Target="VideoPlayer" />
+                                <Hide TargetNode="PauseVideo" />
+                                <Show TargetNode="PlayVideo" />
+                            </Clicked>
+                        </Image>
+                        <Image ux:Name="PlayVideo" Visibility="Hidden" File="assets/white-play-64.png">
+                            <Clicked>
+                                <Play Target="VideoPlayer" />
+                                <Hide TargetNode="PlayVideo" />
+                                <Show TargetNode="PauseVideo" />
+                            </Clicked>
+                        </Image>
+                    </Panel>
+                    
+                </Panel>
+                <Video ux:Name="VideoPlayer" Progress="{Property _progressSlider.Value}" Dock="Fill" StretchMode="Uniform" Url="{video_url}" AutoPlay="true" Background="#000000" Alignment="Center" X="0">
+                    <ProgressAnimation>
+                        <Change progressBar.Width="96.5%" />
+                    </ProgressAnimation>
+                    <WhilePaused>  
+                        <Hide TargetNode="RestartVideo" />
+                        <Hide TargetNode="PauseVideo" />
+                        <Show TargetNode="Status" />
+                        <Show TargetNode="PlayVideo" />
+                    </WhilePaused>
+                    <WhilePlaying>
+                        <Hide TargetNode="RestartVideo" />
+                        <Hide TargetNode="PlayVideo" />
+                        <Show TargetNode="Status" />
+                        <Show TargetNode="PauseVideo" />
+                    </WhilePlaying>
+                    <WhileCompleted>
+                        <Hide TargetNode="PlayVideo" />
+                        <Hide TargetNode="PauseVideo" />
+                        <Hide TargetNode="Status" />
+                        <Show TargetNode="RestartVideo" />
+                    </WhileCompleted>
+                    <Clicked>
+                        <Callback Handler="{toggleControls}" />
+                    </Clicked>
+                </Video>
+                <LoadingIndicator ThemeColor="#ffc215" Alignment="Default" Width="100" Height="10" />
+                <WhileWindowPortrait>
+                    <Change Target="controlPanel.Height" Value="10%" />
+                </WhileWindowPortrait>
+                <WhileTrue Value="{show_controls}">
+                    <PulseForward Target="showControls" />
+                    <Show Delay="0.5" TargetNode="controlPanel" />
+                </WhileTrue>
+                <WhileFalse Value="{show_controls}">
+                    <PulseBackward Target="showControls" />
+                    <Hide Delay="0.5" TargetNode="controlPanel" />
+                </WhileFalse>
+            </Panel>
+        </WhileTrue>
+    </Panel>
+</Panel>
